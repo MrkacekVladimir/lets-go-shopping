@@ -6,12 +6,14 @@ import (
 )
 
 type Server struct {
-	Port int
+	Port            int
+	OrderServiceUrl string
 }
 
-func NewServer(port int) *Server {
+func NewServer(port int, orderServiceUrl string) *Server {
 	return &Server{
-		Port: port,
+		Port:            port,
+		OrderServiceUrl: orderServiceUrl,
 	}
 }
 
@@ -21,6 +23,14 @@ func (s *Server) Start() error {
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello from order server!")
+
+		res, err := http.Get(s.OrderServiceUrl)
+		if err != nil {
+			fmt.Fprintf(w, "Error calling order service: %s", err)
+		} else {
+			fmt.Fprint(w, "Got response!")
+			fmt.Fprintf(w, "Status code: %d", res.StatusCode)
+		}
 	})
 
 	url := fmt.Sprintf(":%d", s.Port)

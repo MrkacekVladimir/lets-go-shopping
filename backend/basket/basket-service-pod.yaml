@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: basket-service
+  labels:
+    app: basket-service
+spec:
+  containers:
+    - name: basket-service
+      image: basket-service:0.1.0
+      ports:
+        - containerPort: 8080
+      env:
+        - name: PORT
+          value: "8080"
+        - name: ORDER_SERVICE_URL
+          value: "http://order-service:8080"
